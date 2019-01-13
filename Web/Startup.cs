@@ -50,12 +50,15 @@ namespace Web
                 app.UseHsts();
             }
 
-            app.UseCors(builder => 
+            if (optionsAccessor.CurrentValue.Cors?.CorsAcceptedDomain != null)
+            {
+                app.UseCors(builder =>
                 builder.WithOrigins(optionsAccessor.CurrentValue.Cors.CorsAcceptedDomain.ToArray())
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-
+            }
+            
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc(routes =>
