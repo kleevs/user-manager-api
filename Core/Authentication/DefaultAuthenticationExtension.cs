@@ -17,7 +17,7 @@ namespace Core.Authentication
 
         public static AuthenticationBuilder AddDefault(this AuthenticationBuilder builder, Action<CookieAuthenticationOptions> configureOptions)
         {
-            return builder.AddDefault(AuthenticationDefaults.AuthenticationScheme, configureOptions);
+            return builder.AddDefault(CookieAuthenticationDefaults.AuthenticationScheme, configureOptions);
         }
 
         public static AuthenticationBuilder AddDefault(this AuthenticationBuilder builder, string authenticationScheme, Action<CookieAuthenticationOptions> configureOptions)
