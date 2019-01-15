@@ -32,7 +32,7 @@ namespace Web
             .AddDefault();
             services.AddMvc(option => 
             {
-                option.Filters.Add(new AuthorizeFilter());
+                //option.Filters.Add(new AuthorizeFilter());
                 option.Filters.Add(new ExceptionFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
