@@ -26,7 +26,7 @@ namespace Web
             services.AddDbContext<Entity.DbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(option => option.LoginPath = "accounts/login");
+                .AddCookie(option => option.LoginPath = "/accounts/login");
             services.AddMvc(option => 
             {
                 //option.Filters.Add(new AuthorizeFilter());
