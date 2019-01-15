@@ -24,7 +24,7 @@ namespace Web.Controllers
         [HttpGet]
         public object Index()
         {
-            var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
+            var userConnectedId = HttpContext.User.Claims.FirstOrDefault(_ => _.Type == ClaimTypes.NameIdentifier)?.Value;
             return new { id = userConnectedId };
         }
 

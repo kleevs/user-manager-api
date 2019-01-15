@@ -1,14 +1,11 @@
-﻿using Core.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Linq;
 using Web.Configuration;
 using Web.Tools;
 
@@ -29,7 +26,7 @@ namespace Web
             services.AddDbContext<Entity.DbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddDefault();
+                .AddCookie(option => option.LoginPath = "accounts/login");
             services.AddMvc(option => 
             {
                 //option.Filters.Add(new AuthorizeFilter());
@@ -56,8 +53,7 @@ namespace Web
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-
-            app.UseUnauthorizeExceptionMiddleware();
+            
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc(routes =>
