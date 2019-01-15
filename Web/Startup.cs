@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using Web.Configuration;
@@ -16,9 +17,12 @@ namespace Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger _logger;
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -54,6 +58,7 @@ namespace Web
 
             if (optionsAccessor.CurrentValue.Cors?.CorsAcceptedDomain != null)
             {
+                _logger.LogInformation("Use cors => {URI}", Newtonsoft.Json.JsonConvert.SerializeObject(optionsAccessor.CurrentValue.Cors?.CorsAcceptedDomain.ToArray()));
                 app.UseCors(builder =>
                 builder.WithOrigins(optionsAccessor.CurrentValue.Cors.CorsAcceptedDomain.ToArray())
                 .AllowCredentials()
@@ -68,6 +73,8 @@ namespace Web
             {
                 routes.MapRoute("default", "{controller=Users}/{action=Index}/{id?}");
             });
+
+            _logger.LogInformation("Start application");
         }
     }
 }
