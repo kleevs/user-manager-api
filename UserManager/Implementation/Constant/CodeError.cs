@@ -2,6 +2,8 @@
 {
     public static class CodeError
     {
+        public const int LoginFailed = 1;
+
         public const int FieldRequired = 10000;
         public const int LoginRequired = 10001;
         public const int PasswordRequired = 10002;

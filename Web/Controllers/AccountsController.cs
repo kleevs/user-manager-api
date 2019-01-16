@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -13,12 +12,10 @@ namespace Web.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IIdentityManager _identityManager;
-        public readonly ILogger<AccountsController> _logger;
 
-        public AccountsController(IIdentityManager identityManager, ILogger<AccountsController> logger)
+        public AccountsController(IIdentityManager identityManager)
         {
             _identityManager = identityManager;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -51,8 +48,6 @@ namespace Web.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
-            _logger.LogInformation("Connexion réussi : {USER}", login);
         }
     }
 }

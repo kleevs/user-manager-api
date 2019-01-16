@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using UserManager.Implementation.Exception;
 using UserManager.Implementation.Model;
 using UserManager.Model;
 using UserManager.Spi;
@@ -18,7 +19,13 @@ namespace UserManager.Implementation
 
         IUser IIdentityManager.Login(string email, string password)
         {
-            return _userRepository.List(new Filter { IsActive = true, Email = email, Password = _hasher.Compute(password) }).First();
+            try
+            {
+                return _userRepository.List(new Filter { IsActive = true, Email = email, Password = _hasher.Compute(password) }).First();
+            } catch (System.Exception)
+            {
+                throw new LoginException();
+            }
         }
     }
 }
