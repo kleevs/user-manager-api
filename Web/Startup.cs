@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,13 @@ namespace Web
             services.AddDbContext<Entity.DbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(option => option.LoginPath = "/accounts/login");
+                .AddCookie(options => 
+                {
+                    options.LoginPath = "/accounts/login";
+                    options.AccessDeniedPath = new PathString("/account/login");
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                    options.Cookie.SameSite = SameSiteMode.None;
+                });
             services.AddMvc(option => 
             {
                 //option.Filters.Add(new AuthorizeFilter());
@@ -49,7 +56,7 @@ namespace Web
                 app.UseHsts();
             }
 
-            app.UseCors(builder => builder.WithOrigins("https://localhost:4200")
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
