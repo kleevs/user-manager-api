@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +37,7 @@ namespace Web
                 });
             services.AddMvc(option => 
             {
-                //option.Filters.Add(new AuthorizeFilter());
+                option.Filters.Add(new AuthorizeFilter());
                 option.Filters.Add(new ExceptionFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
@@ -56,7 +57,7 @@ namespace Web
                 app.UseHsts();
             }
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:4200")
+            app.UseCors(builder => builder.WithOrigins("https://kleevs.github.io")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
