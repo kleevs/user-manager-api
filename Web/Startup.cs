@@ -57,7 +57,7 @@ namespace Web
                 app.UseHsts();
             }
 
-            app.UseCors(builder => builder.WithOrigins("https://kleevs.github.io")
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200", "https://kleevs.github.io")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
