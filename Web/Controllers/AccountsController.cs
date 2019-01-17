@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using UserManager;
+using Web.Models;
 
 namespace Web.Controllers
 {
@@ -25,11 +26,11 @@ namespace Web.Controllers
             return new { id = userConnectedId };
         }
 
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
-        public async System.Threading.Tasks.Task Login(string login, string password)
+        public async System.Threading.Tasks.Task Login([FromBody]LoginViewModel form)
         {
-            var user = _identityManager.Login(login, password);
+            var user = _identityManager.Login(form.Login, form.Password);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, $"{user.Id}"),
