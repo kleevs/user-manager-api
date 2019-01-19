@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 using Web.Configuration;
 using Web.Tools;
 
@@ -30,6 +31,16 @@ namespace Web
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => 
                 {
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = async (context) => 
+                        {
+                            await Task.Run(() => 
+                            {
+                                context.Response.StatusCode = 301;
+                            });
+                        }
+                    };
                     options.LoginPath = "/accounts/login";
                     options.AccessDeniedPath = new PathString("/account/login");
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
