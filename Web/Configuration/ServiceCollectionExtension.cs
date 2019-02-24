@@ -17,6 +17,7 @@ namespace Web.Configuration
             services.AddScoped<IDbContext, DbContext>();
             services.AddScoped<IHasher, Hasher>();
             services.AddScoped<IIdentityManager, IdentityManager>();
+            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
             return services;
         }

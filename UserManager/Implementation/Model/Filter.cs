@@ -2,7 +2,7 @@
 
 namespace UserManager.Implementation.Model
 {
-    class Filter : IFilter
+    public class Filter : IFilter
     {
         public int? Id { get; set; }
         public string Email { get; set; }

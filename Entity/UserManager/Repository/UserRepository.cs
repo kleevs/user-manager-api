@@ -1,7 +1,7 @@
 ﻿using Entity;
-using Model;
 using System.Collections.Generic;
 using System.Linq;
+using UserManager.Implementation.Model;
 using UserManager.Model;
 using UserManager.Spi;
 
@@ -18,7 +18,6 @@ namespace Repository
         void IUserRepository.Delete(int id)
         {
             _domainDbContext.User.Remove(_domainDbContext.User.First(_ => _.Id == id));
-            _domainDbContext.SaveChanges();
         }
 
         IEnumerable<IUser> IUserRepository.List(IFilter filter)
@@ -28,8 +27,7 @@ namespace Repository
                 .Where(_ => !filter.IsActive.HasValue || _.IsActive == filter.IsActive)
                 .Where(_ => !filter.Id.HasValue || _.Id == filter.Id)
                 .Where(_ => string.IsNullOrEmpty(filter.Email) || _.Email == filter.Email)
-                .Where(_ => string.IsNullOrEmpty(filter.Password) || _.Password == filter.Password)
-                .ToList();
+                .Where(_ => string.IsNullOrEmpty(filter.Password) || _.Password == filter.Password);
         }
 
         int IUserRepository.Save(IUser user)
@@ -49,7 +47,6 @@ namespace Repository
             entity.BirthDate = user.BirthDate;
             entity.ParentUser = parent;
 
-            _domainDbContext.SaveChanges();
             return entity.Id.Value;
         }
     }

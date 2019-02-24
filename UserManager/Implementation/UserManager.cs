@@ -9,11 +9,13 @@ namespace UserManager.Implementation
 {
     public class UserManager : IUserManager
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
         private readonly IHasher _hasher;
 
-        public UserManager(IUserRepository userRepository, IHasher hasher)
+        public UserManager(IUnitOfWork unitOfWork, IUserRepository userRepository, IHasher hasher)
         {
+            _unitOfWork = unitOfWork;
             _userRepository = userRepository;
             _hasher = hasher;
         }
@@ -25,6 +27,7 @@ namespace UserManager.Implementation
                 () => { if (id == userConnectedId) throw new BusinessException(CodeError.DeleteUserConnected); }
             });
             _userRepository.Delete(id);
+            _unitOfWork.SaveChanges();
         }
 
         IEnumerable<IUser> IUserManager.List(IFilter filter)
@@ -46,7 +49,8 @@ namespace UserManager.Implementation
             });
 
             user.Password = _hasher.Compute(user.Password);
-            return _userRepository.Save(user);
+            var id = _userRepository.Save(user);
+            return _unitOfWork.SaveChanges(id);
         }
     }
 }

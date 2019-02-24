@@ -1,0 +1,1 @@
+dotnet publish "Web/Web.csproj" --runtime win-x64 --output "C:/_Websites/usermanager/v1.0.0/api"

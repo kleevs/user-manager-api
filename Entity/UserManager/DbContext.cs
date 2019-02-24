@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Model;
 
 namespace Entity
 {
@@ -13,10 +12,6 @@ namespace Entity
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToSchema("UserManager");
-            });
         }
     }
 }

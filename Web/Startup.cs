@@ -43,13 +43,15 @@ namespace Web
                     };
                     options.LoginPath = "/accounts/login";
                     options.AccessDeniedPath = new PathString("/account/login");
+                    options.Cookie.Path = "/";
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                     options.Cookie.SameSite = SameSiteMode.None;
                 });
             services.AddMvc(option => 
             {
                 option.Filters.Add(new AuthorizeFilter());
-                option.Filters.Add(new ExceptionFilter());
+                option.Filters.Add(new BusinessExceptionFilter());
+                option.Filters.Add(new DevExceptionFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
             services.Configure<AppConfig>(Configuration);
@@ -72,7 +74,7 @@ namespace Web
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-            
+
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc(routes =>

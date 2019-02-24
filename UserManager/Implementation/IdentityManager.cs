@@ -17,15 +17,6 @@ namespace UserManager.Implementation
             _hasher = hasher;
         }
 
-        IUser IIdentityManager.Login(string email, string password)
-        {
-            try
-            {
-                return _userRepository.List(new Filter { IsActive = true, Email = email, Password = _hasher.Compute(password) }).First();
-            } catch (System.Exception)
-            {
-                throw new LoginException();
-            }
-        }
+        IUser IIdentityManager.Login(string email, string password) => _userRepository.List(new Filter { IsActive = true, Email = email, Password = _hasher.Compute(password) }).FirstOrDefault() ?? throw new LoginException();
     }
 }

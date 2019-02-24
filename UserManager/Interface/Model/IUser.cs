@@ -4,12 +4,12 @@ namespace UserManager.Model
 {
     public interface IUser : IIdentifiable
     {
-        string Email { get; set; }
+        string Email { get; }
         string Password { get; set; }
-        string LastName { get; set; }
-        string FirstName { get; set; }
-        bool IsActive { get; set; }
-        DateTime? BirthDate { get; set; }
-        IUser ParentUser { get; set; }
+        string LastName { get; }
+        string FirstName { get; }
+        bool IsActive { get; }
+        DateTime? BirthDate { get; }
+        IUser ParentUser { get; }
     }
 }

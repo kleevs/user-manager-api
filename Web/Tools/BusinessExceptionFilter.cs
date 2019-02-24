@@ -4,7 +4,7 @@ using UserManager.Implementation.Exception;
 
 namespace Web.Tools
 {
-    public class ExceptionFilter : ExceptionFilterAttribute
+    public class BusinessExceptionFilter : ExceptionFilterAttribute
     {
         public override void OnException(ExceptionContext context)
         {

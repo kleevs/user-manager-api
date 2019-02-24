@@ -1,12 +1,21 @@
-﻿using Model;
+﻿using System;
 using UserManager.Model;
 
 namespace Web.Models
 {
-    public class UserViewModel : User
+    public class UserViewModel : IUser
     {
-        public new int? ParentUser { get => base.ParentUser?.Id; set => base.ParentUser = new User { Id = value }; }
-        public static new UserViewModel Map(IUser user) => user == null ? null : new UserViewModel
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public int? Id { get; set; }
+        public int? ParentUser { get; set; }
+        IUser IUser.ParentUser => new UserViewModel { Id = ParentUser };
+
+        public static UserViewModel Map(IUser user) => user == null ? null : new UserViewModel
         {
             Id = user.Id,
             Email = user.Email,
