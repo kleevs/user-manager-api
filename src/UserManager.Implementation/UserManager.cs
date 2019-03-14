@@ -43,7 +43,7 @@ namespace UserManager.Implementation
             await _unitOfWork.SaveChangesAsync(_newUserRepository.Save(HashPassword(ControlNewUser(user))));
 
         public async Task<int> Save(IUpdateUser user) =>
-            await _unitOfWork.SaveChangesAsync(_updateUserRepository.Save(user));
+            await _unitOfWork.SaveChangesAsync(_updateUserRepository.Save(ControlUser(user)));
 
         private INewUser HashPassword(INewUser user)
         {
@@ -60,6 +60,18 @@ namespace UserManager.Implementation
                 () => { if (!user.BirthDate.HasValue) throw new FieldRequiredException(CodeError.BirthDateRequired, "birth date"); },
                 () => { if (string.IsNullOrEmpty(user.Email) && !user.Id.HasValue) throw new FieldRequiredException(CodeError.LoginRequired, "email"); },
                 () => { if (string.IsNullOrEmpty(user.Password) && !user.Id.HasValue) throw new FieldRequiredException(CodeError.PasswordRequired, "password"); }
+            });
+
+            return user;
+        }
+
+        private IUpdateUser ControlUser(IUpdateUser user)
+        {
+            ArrayException.Assert<BusinessException>(CodeError.FieldRequired, new List<Action>
+            {
+                () => { if (string.IsNullOrEmpty(user.FirstName)) throw new FieldRequiredException(CodeError.FirstNameRequired, "first name"); },
+                () => { if (string.IsNullOrEmpty(user.LastName)) throw new FieldRequiredException(CodeError.LastNameRequired, "last name"); },
+                () => { if (!user.BirthDate.HasValue) throw new FieldRequiredException(CodeError.BirthDateRequired, "birth date"); },
             });
 
             return user;

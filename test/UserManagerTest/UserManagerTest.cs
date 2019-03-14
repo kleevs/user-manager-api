@@ -1,4 +1,5 @@
 using Moq;
+using System;
 using System.Threading.Tasks;
 using UserManager.Implementation.Constant;
 using UserManager.Implementation.Exception;
@@ -68,5 +69,247 @@ namespace UserManagerTest
                 Assert.Contains(exception.Errors, (error) => error.Code == CodeError.DeleteUserConnected);
             }
         }
+
+        public class List
+        {
+            [Fact]
+            public void Should_Call_Repository()
+            {
+                // arrange
+                var context = new TestContext();
+
+                // act
+                context.Sut.List();
+
+                // assert
+                context.UserRepository.Verify(_ => _.List(null));
+            }
+
+            [Fact]
+            public void Should_Call_Repository_With_Same_Filter()
+            {
+                // arrange
+                var context = new TestContext();
+                var filter = new TestFilter();
+
+                // act
+                context.Sut.List(filter);
+
+                // assert
+                context.UserRepository.Verify(_ => _.List(filter));
+            }
+
+            class TestFilter : IFilter
+            {
+                public int? Id { get; set; }
+                public string Email { get; set; }
+                public string Password { get; set; }
+                public bool? IsActive { get; set; }
+            }
+        }
+
+        public class SaveNewUser
+        {
+            [Fact]
+            public async Task Should_Call_Repository_Save_Method()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser
+                {
+                    LastName = "LastName",
+                    FirstName = "FirstName",
+                    BirthDate = DateTime.UtcNow,
+                    Email = "Email",
+                    Password = "Password"
+                };
+
+                // act
+                await context.Sut.Save(user);
+
+                // assert
+                context.NewUserRepository.Verify(_ => _.Save(user));
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_FirstName_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.FirstNameRequired);
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_LastName_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.LastNameRequired);
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_Birthdate_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.BirthDateRequired);
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_Password_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.PasswordRequired);
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_Email_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.LoginRequired);
+            }
+
+            [Theory]
+            [InlineData("pass")]
+            [InlineData("password")]
+            [InlineData("1234")]
+            public async Task Should_Hash_Password(string password)
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestNewUser
+                {
+                    LastName = "LastName",
+                    FirstName = "FirstName",
+                    BirthDate = DateTime.UtcNow,
+                    Email = "Email",
+                    Password = password
+                };
+
+                // act
+                await context.Sut.Save(user);
+
+                // assert
+                context.NewUserRepository.Verify(_ => _.Save(It.Is<INewUser>(u => u.Password != password)));
+            }
+
+            class TestNewUser : INewUser
+            {
+                public int? Id { get; set; }
+                public DateTime? BirthDate { get; set; }
+                public string Password { get; set; }
+                public string Email { get; set; }
+                public string LastName { get; set; }
+                public string FirstName { get; set; }
+                public bool IsActive { get; set; }
+                public IUser ParentUser { get; set; }
+            }
+        }
+
+        public class SaveUpdateUser
+        {
+            [Fact]
+            public async Task Should_Call_Repository_Save_Method()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestUpdateUser
+                {
+                    LastName = "LastName",
+                    FirstName = "FirstName",
+                    BirthDate = DateTime.UtcNow
+                };
+
+                // act
+                await context.Sut.Save(user);
+
+                // assert
+                context.UpdateUserRepository.Verify(_ => _.Save(user));
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_FirstName_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestUpdateUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.FirstNameRequired);
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_LastName_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestUpdateUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.LastNameRequired);
+            }
+
+            [Fact]
+            public async Task Should_Raise_Exception_If_Birthdate_Is_Empty()
+            {
+                // arrange
+                var context = new TestContext();
+                var user = new TestUpdateUser();
+
+                // act
+                var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
+
+                // assert
+                Assert.Contains(exception.Errors, (error) => error.Code == CodeError.BirthDateRequired);
+            }
+
+            class TestUpdateUser : IUpdateUser
+            {
+                public int? Id { get; set; }
+                public DateTime? BirthDate { get; set; }
+                public string LastName { get; set; }
+                public string FirstName { get; set; }
+                public bool IsActive { get; set; }
+            }
+        }
+
     }
 }
