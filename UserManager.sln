@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager", "UserManager\UserManager.csproj", "{DD9B74AF-602D-490A-ACCB-DA4D809D43A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager", "src\UserManager\UserManager.csproj", "{DD9B74AF-602D-490A-ACCB-DA4D809D43A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0ABDF8BC-9201-47A7-B6E2-0B338415873E}"
 EndProject
@@ -11,15 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "domain", "domain", "{F52634
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "application", "application", "{99579DDC-DA2B-4F58-B8BF-CACEC296A655}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{99ABFC0C-3B6E-4AE8-9689-5E153C49CA22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "src\Web\Web.csproj", "{99ABFC0C-3B6E-4AE8-9689-5E153C49CA22}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{1175FC52-7A5F-4DB7-B78D-09A63E490A25}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entity", "Entity\Entity.csproj", "{B2492699-26B5-4B02-9215-A444A98DC02B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entity", "src\Entity\Entity.csproj", "{B2492699-26B5-4B02-9215-A444A98DC02B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{B49A7C4F-8B22-41B1-B457-8F8BBE4F677C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool", "Tool\Tool.csproj", "{AB73F020-481B-4237-B0E1-A65F890B3FAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool", "src\Tool\Tool.csproj", "{AB73F020-481B-4237-B0E1-A65F890B3FAE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9C04B58-9D94-4330-9FC4-FBB3060EABC8}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,9 +29,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{E83BD265-7A1E-4837-A12E-D230C382B88E}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "src\Database\Database.sqlproj", "{E83BD265-7A1E-4837-A12E-D230C382B88E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManager.Implementation", "UserManager.Implementation\UserManager.Implementation.csproj", "{9C985657-4D24-46CF-AC45-F3FBA4FB44D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager.Implementation", "src\UserManager.Implementation\UserManager.Implementation.csproj", "{9C985657-4D24-46CF-AC45-F3FBA4FB44D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{487A6F1C-2309-47B1-B2EC-066B27780B63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagerTest", "test\UserManagerTest\UserManagerTest.csproj", "{50DA9439-1EA4-48EB-BC37-566810898035}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +69,10 @@ Global
 		{9C985657-4D24-46CF-AC45-F3FBA4FB44D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C985657-4D24-46CF-AC45-F3FBA4FB44D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C985657-4D24-46CF-AC45-F3FBA4FB44D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DA9439-1EA4-48EB-BC37-566810898035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DA9439-1EA4-48EB-BC37-566810898035}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DA9439-1EA4-48EB-BC37-566810898035}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DA9439-1EA4-48EB-BC37-566810898035}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +88,7 @@ Global
 		{AB73F020-481B-4237-B0E1-A65F890B3FAE} = {B49A7C4F-8B22-41B1-B457-8F8BBE4F677C}
 		{E83BD265-7A1E-4837-A12E-D230C382B88E} = {1175FC52-7A5F-4DB7-B78D-09A63E490A25}
 		{9C985657-4D24-46CF-AC45-F3FBA4FB44D2} = {F52634EE-7579-4AFE-B8C4-034044BE77B1}
+		{50DA9439-1EA4-48EB-BC37-566810898035} = {487A6F1C-2309-47B1-B2EC-066B27780B63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FD4B4EA-B168-4F1B-B405-5262C696D9CD}
