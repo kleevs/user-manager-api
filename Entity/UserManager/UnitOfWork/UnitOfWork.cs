@@ -1,5 +1,6 @@
 ﻿using Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using UserManager.Spi;
 
 namespace UnitOfWork
@@ -13,9 +14,10 @@ namespace UnitOfWork
             _domainDbContext = domainDbContext;
         }
 
-        public int SaveChanges() => _domainDbContext.SaveChanges();
+        public async Task<int> SaveChangesAsync() => 
+            await _domainDbContext.SaveChangesAsync();
 
-        public int SaveChanges(int id)
+        public async Task<int> SaveChangesAsync(int id)
         {
             var property = _domainDbContext.ChangeTracker.Entries()
                 .SelectMany(_ =>_.Properties)
@@ -24,7 +26,7 @@ namespace UnitOfWork
                 .Where(_ => (int)_.CurrentValue == id)
                 .FirstOrDefault();
 
-            SaveChanges();
+            await SaveChangesAsync();
             return property?.OriginalValue as int? ?? id;
         }
     }

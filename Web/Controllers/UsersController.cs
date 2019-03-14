@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using UserManager;
@@ -18,44 +19,43 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<UserViewModel> Index()
-        {
-            return _userManager.List().Select(UserViewModel.Map);
-        }
+        public async Task<IEnumerable<UserOutputModel>> Index() =>
+            await _userManager.List()
+            .Select(UserOutputModel.Map)
+            .ToAsyncEnumerable()
+            .ToList();
 
         [HttpGet]
         [Route("users/{id}")]
-        public UserViewModel Index(int id)
-        {
-            return _userManager.List(new Filter { Id = id }).Select(UserViewModel.Map).First();
-        }
+        public async Task<UserOutputModel> Index(int id) => 
+            await _userManager.List(new FilterInputModel { Id = id })
+            .Select(UserOutputModel.Map)
+            .ToAsyncEnumerable()
+            .First();
 
         [HttpPut]
         [Route("users/{id}")]
-        public void Update([FromBody]UserViewModel model, int id)
+        public async Task Update([FromBody]UpdateUserInputModel model, int id)
         {
-            var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
-            model.ParentUser = userConnectedId;
             model.Id = id;
-            _userManager.Save(model);
+            await _userManager.Save(model);
         }
 
         [HttpPost]
         [Route("users")]
-        public void Create([FromBody]UserViewModel model)
+        public async Task Create([FromBody]NewUserInputModel model)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
             model.ParentUser = userConnectedId;
-            model.Id = null;
-            _userManager.Save(model);
+            await _userManager.Save(model);
         }
 
         [HttpDelete]
         [Route("users/{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
-            _userManager.Delete(id, userConnectedId);
+            await _userManager.Delete(id, userConnectedId);
         }
     }
 }

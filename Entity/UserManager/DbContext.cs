@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Entity
 {
@@ -13,5 +14,8 @@ namespace Entity
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
         }
+
+        public Task<int> SaveChangesAsync() => 
+            base.SaveChangesAsync();
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using UserManager;
 using Web.Models;
 
@@ -20,15 +21,20 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public object Index()
+        public async Task<object> Index()
         {
-            var userConnectedId = HttpContext.User.Claims.FirstOrDefault(_ => _.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userConnectedId = await HttpContext.User.Claims
+                .ToAsyncEnumerable()
+                .Where(_ => _.Type == ClaimTypes.NameIdentifier)
+                .Select(_ => _.Value)
+                .FirstOrDefault();
+
             return new { id = userConnectedId };
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async System.Threading.Tasks.Task Login([FromBody]LoginViewModel form)
+        public async Task Login([FromBody]LoginInputModel form)
         {
             var user = _identityManager.Login(form.Login, form.Password);
             var claims = new List<Claim>

@@ -2,7 +2,7 @@
 
 namespace Model
 {
-    public class Filter : IFilter
+    public class FilterInputModel : IFilter
     {
         public int? Id { get; set; }
         public string Email { get; set; }

@@ -6,7 +6,7 @@ using UserManager.Model;
 namespace Entity
 {
     [Table("User", Schema = "UserManager")]
-    public class User : IUser
+    public class User : IUser, INewUser, IUserData
     {
         [Key]
         public int? Id { get; set; }
@@ -17,6 +17,7 @@ namespace Entity
         public bool IsActive { get; set; }
         public DateTime? BirthDate { get; set; }
         public User ParentUser { get; set; }
-        IUser IUser.ParentUser => ParentUser;
+
+        IUser IHerarchy<IUser>.ParentUser => ParentUser;
     }
 }
