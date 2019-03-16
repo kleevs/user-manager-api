@@ -32,7 +32,7 @@ namespace Entity.Filter
                 query = query.Where(_ => _.Password == filter.Password);
             }
 
-            return query;
+            return query.OrderBy(_ => _.Id);
         }
     }
 }

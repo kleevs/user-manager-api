@@ -1,5 +1,4 @@
-﻿using Entity;
-using Entity.Filter;
+﻿using Entity.Filter;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

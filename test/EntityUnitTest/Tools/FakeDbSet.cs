@@ -34,6 +34,11 @@ namespace EntityUnitTest.Tools
             return null;
         }
 
+        public override void AddRange(IEnumerable<T> entity)
+        {
+            entity.Select(Add).ToList();
+        }
+
         public override EntityEntry<T> Remove(T entity)
         {
             Mock.Object.Remove(entity);
