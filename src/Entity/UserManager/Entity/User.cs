@@ -6,7 +6,11 @@ using UserManager.Model;
 namespace Entity
 {
     [Table("User", Schema = "UserManager")]
-    public class User : IUser, INewUser, IUserData
+    public class User : 
+        IUser, 
+        INewUser, 
+        IUserData,
+        IUserEmailable
     {
         [Key]
         public int? Id { get; set; }

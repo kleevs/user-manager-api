@@ -15,7 +15,7 @@ namespace Entity
         {
         }
 
-        public Task<int> SaveChangesAsync() => 
-            base.SaveChangesAsync();
+        public async Task<int> SaveChangesAsync() => 
+            await base.SaveChangesAsync();
     }
 }

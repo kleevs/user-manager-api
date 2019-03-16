@@ -136,7 +136,14 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestNewUser();
+                var user = new TestNewUser
+                {
+                    LastName = "LastName",
+                    FirstName = null,
+                    BirthDate = DateTime.UtcNow,
+                    Email = "Email",
+                    Password = "Password"
+                };
 
                 // act
                 var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
@@ -150,7 +157,14 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestNewUser();
+                var user = new TestNewUser
+                {
+                    LastName = null,
+                    FirstName = "FirstName",
+                    BirthDate = DateTime.UtcNow,
+                    Email = "Email",
+                    Password = "Password"
+                };
 
                 // act
                 var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
@@ -164,7 +178,14 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestNewUser();
+                var user = new TestNewUser
+                {
+                    LastName = "LastName",
+                    FirstName = "FirstName",
+                    BirthDate = null,
+                    Email = "Email",
+                    Password = "Password"
+                };
 
                 // act
                 var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
@@ -178,7 +199,14 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestNewUser();
+                var user = new TestNewUser
+                {
+                    LastName = "LastName",
+                    FirstName = "FirstName",
+                    BirthDate = DateTime.UtcNow,
+                    Email = "Email",
+                    Password = null
+                };
 
                 // act
                 var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
@@ -192,7 +220,14 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestNewUser();
+                var user = new TestNewUser
+                {
+                    LastName = "LastName",
+                    FirstName = "FirstName",
+                    BirthDate = DateTime.UtcNow,
+                    Email = null,
+                    Password = "Password"
+                };
 
                 // act
                 var exception = await Assert.ThrowsAsync<ArrayException>(async () => await context.Sut.Save(user));
@@ -310,6 +345,5 @@ namespace UserManagerTest
                 public bool IsActive { get; set; }
             }
         }
-
     }
 }

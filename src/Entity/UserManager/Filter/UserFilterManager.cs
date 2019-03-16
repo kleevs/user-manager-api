@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UserManager.Model;
 
-namespace Entity.UserManager.Filter
+namespace Entity.Filter
 {
     public class UserFilterManager : IFilterManager<IFilter, User>
     {

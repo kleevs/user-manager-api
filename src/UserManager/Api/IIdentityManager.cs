@@ -4,6 +4,6 @@ namespace UserManager
 {
     public interface IIdentityManager
     {
-        IUserData Login(string email, string password);
+        IUserEmailable Login(string email, string password);
     }
 }

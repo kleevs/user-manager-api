@@ -1,7 +1,7 @@
 ﻿using Entity;
-using Entity.UserManager.Filter;
+using Entity.Filter;
 using Microsoft.Extensions.DependencyInjection;
-using Repository;
+using Entity.Repository;
 using UserManager;
 using UserManager.Implementation;
 using UserManager.Model;
@@ -24,6 +24,7 @@ namespace Web.Configuration
             services.AddScoped<IGenericWriterRepository<INewUser>, UserRepository>();
             services.AddScoped<IGenericWriterRepository<IUpdateUser>, UserRepository>();
             services.AddScoped<IGenericWriterRepository<IUpdateUser, int>, UserRepository>();
+            services.AddScoped<IGenericReaderRepository<IFilter, IUserEmailable>, UserRepository>();
 
             services.AddScoped<IFilterManager<IFilter, User>, UserFilterManager>();
 

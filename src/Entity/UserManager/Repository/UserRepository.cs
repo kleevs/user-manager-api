@@ -1,16 +1,16 @@
 ﻿using Entity;
-using Entity.UserManager.Filter;
+using Entity.Filter;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using UserManager.Implementation.Model;
 using UserManager.Model;
 using UserManager.Spi;
 
-namespace Repository
+namespace Entity.Repository
 {
     public class UserRepository :
         IGenericReaderRepository<IFilter, IUserData>,
+        IGenericReaderRepository<IFilter, IUserEmailable>,
         IGenericWriterRepository<INewUser>,
         IGenericWriterRepository<IUpdateUser, int>
     {
@@ -29,16 +29,16 @@ namespace Repository
             return 0;
         }
 
-        public int Delete(INewUser model) =>
-            Delete(model.Id.Value);
-
-        public int Delete(IUpdateUser model) =>
-            Delete(model.Id.Value);
-
-        public IEnumerable<IUserData> List(IFilter filter) => 
+        public IEnumerable<User> List(IFilter filter) =>
             _filterManager.Apply(filter, _domainDbContext.User
                 .Include(_ => _.ParentUser)
                 .AsNoTracking(), _domainDbContext);
+
+        IEnumerable<IUserData> IGenericReaderRepository<IFilter, IUserData>.List(IFilter filter) =>
+            List(filter);
+
+        IEnumerable<IUserEmailable> IGenericReaderRepository<IFilter, IUserEmailable>.List(IFilter filter) =>
+            List(filter);
 
         public int Save(INewUser user)
         {
