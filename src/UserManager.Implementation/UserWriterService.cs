@@ -8,48 +8,30 @@ using UserManager.Spi;
 
 namespace UserManager.Implementation
 {
-    public class UserManager : IUserManager
+    public class UserWriterService : IUserWriterService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IGenericReaderRepository<IFilter, IUserData> _userRepository;
         private readonly IGenericWriterRepository<INewUser> _newUserRepository;
         private readonly IGenericWriterRepository<IUpdateUser, int> _updateUserRepository;
-        private readonly IHasher _hasher;
 
-        public UserManager(
+        public UserWriterService(
             IUnitOfWork unitOfWork,
-            IGenericReaderRepository<IFilter, IUserData> userRepository,
             IGenericWriterRepository<INewUser> newUserRepository,
-            IGenericWriterRepository<IUpdateUser, int> updateUserRepository,
-            IHasher hasher)
+            IGenericWriterRepository<IUpdateUser, int> updateUserRepository)
         {
             _unitOfWork = unitOfWork;
-            _userRepository = userRepository;
             _newUserRepository = newUserRepository;
             _updateUserRepository = updateUserRepository;
-            _hasher = hasher;
         }
 
         public async Task Delete(int id, int userConnectedId) => 
             await _unitOfWork.SaveChangesAsync(_updateUserRepository.Delete(ControlDeleteUser(id, userConnectedId)));
 
-        public IEnumerable<IUserData> List(IFilter filter) => 
-            _userRepository.List(filter);
-
-        public IEnumerable<IUserData> List() => 
-            List(null);
-
         public async Task<int> Save(INewUser user) =>
-            await _unitOfWork.SaveChangesAsync(_newUserRepository.Save(HashPassword(ControlNewUser(user))));
+            await _unitOfWork.SaveChangesAsync(_newUserRepository.Save(ControlNewUser(user)));
 
         public async Task<int> Save(IUpdateUser user) =>
             await _unitOfWork.SaveChangesAsync(_updateUserRepository.Save(ControlUser(user)));
-
-        private INewUser HashPassword(INewUser user)
-        {
-            user.Password = _hasher.Compute(user.Password);
-            return user;
-        }
 
         private INewUser ControlNewUser(INewUser user)
         {

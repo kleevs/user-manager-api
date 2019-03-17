@@ -9,32 +9,26 @@ using Xunit;
 
 namespace UserManagerTest
 {
-    public class UserManagerTest
+    public class UserWriterServiceTest
     {
         public class TestContext
         {
             public TestContext()
             {
                 UnitOfWork = new Mock<IUnitOfWork>();
-                UserRepository = new Mock<IGenericReaderRepository< IFilter, IUserData>>();
                 NewUserRepository = new Mock<IGenericWriterRepository<INewUser>>();
                 UpdateUserRepository = new Mock<IGenericWriterRepository< IUpdateUser, int>>();
-                Hasher = new Mock<IHasher>();
-                Sut = new UserManager.Implementation.UserManager(
+                Sut = new UserManager.Implementation.UserWriterService(
                     UnitOfWork.Object,
-                    UserRepository.Object,
                     NewUserRepository.Object,
-                    UpdateUserRepository.Object,
-                    Hasher.Object
+                    UpdateUserRepository.Object
                 );
             }
 
             public Mock<IUnitOfWork> UnitOfWork { get; set; }
-            public Mock<IGenericReaderRepository<IFilter, IUserData>> UserRepository { get; set; }
             public Mock<IGenericWriterRepository<INewUser>> NewUserRepository { get; set; }
             public Mock<IGenericWriterRepository<IUpdateUser, int>> UpdateUserRepository { get; set; }
-            public Mock<IHasher> Hasher { get; set; }
-            public UserManager.Implementation.UserManager Sut { get; set; } 
+            public UserManager.Implementation.UserWriterService Sut { get; set; } 
         }
 
         public class Delete
@@ -67,44 +61,6 @@ namespace UserManagerTest
 
                 // assert
                 Assert.Contains(exception.Errors, (error) => error.Code == CodeError.DeleteUserConnected);
-            }
-        }
-
-        public class List
-        {
-            [Fact]
-            public void Should_Call_Repository()
-            {
-                // arrange
-                var context = new TestContext();
-
-                // act
-                context.Sut.List();
-
-                // assert
-                context.UserRepository.Verify(_ => _.List(null));
-            }
-
-            [Fact]
-            public void Should_Call_Repository_With_Same_Filter()
-            {
-                // arrange
-                var context = new TestContext();
-                var filter = new TestFilter();
-
-                // act
-                context.Sut.List(filter);
-
-                // assert
-                context.UserRepository.Verify(_ => _.List(filter));
-            }
-
-            class TestFilter : IFilter
-            {
-                public int? Id { get; set; }
-                public string Email { get; set; }
-                public string Password { get; set; }
-                public bool? IsActive { get; set; }
             }
         }
 
@@ -234,30 +190,6 @@ namespace UserManagerTest
 
                 // assert
                 Assert.Contains(exception.Errors, (error) => error.Code == CodeError.LoginRequired);
-            }
-
-            [Theory]
-            [InlineData("pass")]
-            [InlineData("password")]
-            [InlineData("1234")]
-            public async Task Should_Hash_Password(string password)
-            {
-                // arrange
-                var context = new TestContext();
-                var user = new TestNewUser
-                {
-                    LastName = "LastName",
-                    FirstName = "FirstName",
-                    BirthDate = DateTime.UtcNow,
-                    Email = "Email",
-                    Password = password
-                };
-
-                // act
-                await context.Sut.Save(user);
-
-                // assert
-                context.NewUserRepository.Verify(_ => _.Save(It.Is<INewUser>(u => u.Password != password)));
             }
 
             class TestNewUser : INewUser

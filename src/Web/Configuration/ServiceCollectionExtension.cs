@@ -1,5 +1,4 @@
 ﻿using Entity;
-using Entity.Filter;
 using Microsoft.Extensions.DependencyInjection;
 using Entity.Repository;
 using UserManager;
@@ -14,19 +13,19 @@ namespace Web.Configuration
     {
         public static IServiceCollection Configure(this IServiceCollection services)
         {
-            services.AddScoped<IUserManager, UserManager.Implementation.UserManager>();
+            services.AddScoped<IUserReaderService, UserReaderService>();
+            services.AddScoped<IUserWriterService, UserWriterService>();
             services.AddScoped<IDbContext, DbContext>();
             services.AddScoped<IHasher, Hasher>();
             services.AddScoped<IIdentityManager, IdentityManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
-            services.AddScoped<IGenericReaderRepository<IFilter, IUserData>, UserRepository>();
+            services.AddScoped<IGenericReaderRepository<IUserFilterable>, UserRepository>();
             services.AddScoped<IGenericWriterRepository<INewUser>, UserRepository>();
-            services.AddScoped<IGenericWriterRepository<IUpdateUser>, UserRepository>();
             services.AddScoped<IGenericWriterRepository<IUpdateUser, int>, UserRepository>();
-            services.AddScoped<IGenericReaderRepository<IFilter, IUserEmailable>, UserRepository>();
+            services.AddScoped<IGenericReaderRepository<IUserEmailable>, UserRepository>();
 
-            services.AddScoped<IFilterManager<IFilter, User>, UserFilterManager>();
+            services.AddScoped<IFilterManager<IFilter, IUserFilterable>, UserFilterManager>();
 
             return services;
         }

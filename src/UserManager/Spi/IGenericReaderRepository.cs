@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace UserManager.Spi
 {
-    public interface IGenericReaderRepository<TFilter, TOutput>
-    {
-        IEnumerable<TOutput> List(TFilter filter);
-    }
-
     public interface IGenericReaderRepository<TOutput>
     {
-        IEnumerable<TOutput> List();
+        IQueryable<TOutput> List();
     }
 }

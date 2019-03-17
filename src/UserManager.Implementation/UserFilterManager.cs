@@ -1,11 +1,19 @@
 ﻿using System.Linq;
 using UserManager.Model;
+using UserManager.Spi;
 
-namespace Entity.Filter
+namespace UserManager.Implementation
 {
-    public class UserFilterManager : IFilterManager<IFilter, User>
+    public class UserFilterManager : IFilterManager<IFilter, IUserFilterable>
     {
-        public IQueryable<User> Apply(IFilter filter, IQueryable<User> query, IDbContext dbContext)
+        private readonly IHasher _hasher;
+
+        public UserFilterManager(IHasher hasher)
+        {
+            _hasher = hasher;
+        }
+
+        public IQueryable<IUserFilterable> Apply(IFilter filter, IQueryable<IUserFilterable> query)
         {
             if (filter == null)
             {
@@ -24,12 +32,7 @@ namespace Entity.Filter
 
             if (!string.IsNullOrEmpty(filter.Email))
             {
-                query = query.Where(_ => _.Email == filter.Email);
-            }
-
-            if (!string.IsNullOrEmpty(filter.Password))
-            {
-                query = query.Where(_ => _.Password == filter.Password);
+                query = query.Where(_ => _.Email.StartsWith(filter.Email));
             }
 
             return query.OrderBy(_ => _.Id);

@@ -1,10 +1,10 @@
 using Entity;
 using Moq;
-using Entity.Filter;
 using UserManager.Model;
 using Xunit;
 using EntityUnitTest.Tools;
 using System;
+using UserManager.Spi;
 
 namespace EntityUnitTest
 {
@@ -15,15 +15,15 @@ namespace EntityUnitTest
             public TestContext()
             {
                 DbContext = new Mock<IDbContext>();
-                FilterManager = new Mock<IFilterManager<IFilter, User>>();
+                Hasher = new Mock<IHasher>();
                 Sut = new Entity.Repository.UserRepository(
                     DbContext.Object,
-                    FilterManager.Object
+                    Hasher.Object
                 );
             }
 
             public Mock<IDbContext> DbContext { get; set; }
-            public Mock<IFilterManager<IFilter, User>> FilterManager { get; set; }
+            public Mock<IHasher> Hasher { get; set; }
             public Entity.Repository.UserRepository Sut { get; set; }
         }
 
@@ -55,7 +55,7 @@ namespace EntityUnitTest
             [InlineData("lastname", "firstname", "email", "password", true)]
             [InlineData("lastname", "firstname", "email", "password", false)]
             [InlineData("Dupont", "Marc", "test@email.com", "1234", true)]
-            public void Should_Save_Into_DBContext_By_Id(
+            public void Should_Save_Into_DBContext(
                 string lastName,
                 string firstName,
                 string email,
@@ -75,6 +75,7 @@ namespace EntityUnitTest
                     IsActive = isActive
                 };
                 userDbSet.Mock.Setup(_ => _.Add(It.IsAny<User>())).Callback<User>(u => u.Id = 1);
+                context.Hasher.Setup(_ => _.Compute(It.IsAny<string>())).Returns<string>(_ => _);
                 context.DbContext.Setup(_ => _.User).Returns(userDbSet);
 
                 // act

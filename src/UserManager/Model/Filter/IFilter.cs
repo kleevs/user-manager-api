@@ -1,10 +1,11 @@
 ﻿namespace UserManager.Model
 {
-    public interface IFilter
+    public interface IFilterable : IEmailable, IIdentifiable
     {
-        int? Id { get; }
-        string Email { get; }
-        string Password { get; }
+    }
+
+    public interface IFilter : IFilterable
+    {
         bool? IsActive { get; }
     }
 }

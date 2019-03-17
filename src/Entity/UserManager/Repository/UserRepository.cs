@@ -1,6 +1,4 @@
-﻿using Entity.Filter;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using UserManager.Model;
 using UserManager.Spi;
@@ -8,18 +6,18 @@ using UserManager.Spi;
 namespace Entity.Repository
 {
     public class UserRepository :
-        IGenericReaderRepository<IFilter, IUserData>,
-        IGenericReaderRepository<IFilter, IUserEmailable>,
+        IGenericReaderRepository<IUserFilterable>,
+        IGenericReaderRepository<IUserEmailable>,
         IGenericWriterRepository<INewUser>,
         IGenericWriterRepository<IUpdateUser, int>
     {
         private readonly IDbContext _domainDbContext;
-        private readonly IFilterManager<IFilter, User> _filterManager;
+        private readonly IHasher _hasher;
 
-        public UserRepository(IDbContext domainDbContext, IFilterManager<IFilter, User> filterManager)
+        public UserRepository(IDbContext domainDbContext, IHasher hasher)
         {
             _domainDbContext = domainDbContext;
-            _filterManager = filterManager;
+            _hasher = hasher;
         }
 
         public int Delete(int id)
@@ -28,16 +26,16 @@ namespace Entity.Repository
             return 0;
         }
 
-        public IEnumerable<User> List(IFilter filter) =>
-            _filterManager.Apply(filter, _domainDbContext.User
+        public IQueryable<User> List() =>
+            _domainDbContext.User
                 .Include(_ => _.ParentUser)
-                .AsNoTracking(), _domainDbContext);
+                .AsNoTracking();
 
-        IEnumerable<IUserData> IGenericReaderRepository<IFilter, IUserData>.List(IFilter filter) =>
-            List(filter);
+        IQueryable<IUserFilterable> IGenericReaderRepository<IUserFilterable>.List() =>
+            List();
 
-        IEnumerable<IUserEmailable> IGenericReaderRepository<IFilter, IUserEmailable>.List(IFilter filter) =>
-            List(filter);
+        IQueryable<IUserEmailable> IGenericReaderRepository<IUserEmailable>.List() =>
+            List();
 
         public int Save(INewUser user)
         {
@@ -46,7 +44,7 @@ namespace Entity.Repository
 
             _domainDbContext.User.Add(entity);
 
-            entity.Password = user.Password;
+            entity.Password = _hasher.Compute(user.Password);
             entity.Email = user.Email;
             entity.LastName = user.LastName;
             entity.FirstName = user.FirstName;

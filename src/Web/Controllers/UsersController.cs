@@ -11,16 +11,18 @@ namespace Web.Controllers
 {
     public class UsersController : ControllerBase
     {
-        private readonly IUserManager _userManager;
+        private readonly IUserReaderService _userReaderService;
+        private readonly IUserWriterService _userWriterService;
 
-        public UsersController(IUserManager userManager)
+        public UsersController(IUserReaderService userReaderService, IUserWriterService userWriterService)
         {
-            _userManager = userManager;
+            _userReaderService = userReaderService;
+            _userWriterService = userWriterService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<UserOutputModel>> Index() =>
-            await _userManager.List()
+            await _userReaderService.List()
             .Select(UserOutputModel.Map)
             .ToAsyncEnumerable()
             .ToList();
@@ -28,7 +30,7 @@ namespace Web.Controllers
         [HttpGet]
         [Route("users/{id}")]
         public async Task<UserOutputModel> Index(int id) => 
-            await _userManager.List(new FilterInputModel { Id = id })
+            await _userReaderService.List(new FilterInputModel { Id = id })
             .Select(UserOutputModel.Map)
             .ToAsyncEnumerable()
             .First();
@@ -38,7 +40,7 @@ namespace Web.Controllers
         public async Task Update([FromBody]UpdateUserInputModel model, int id)
         {
             model.Id = id;
-            await _userManager.Save(model);
+            await _userWriterService.Save(model);
         }
 
         [HttpPost]
@@ -47,7 +49,7 @@ namespace Web.Controllers
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
             model.ParentUser = userConnectedId;
-            await _userManager.Save(model);
+            await _userWriterService.Save(model);
         }
 
         [HttpDelete]
@@ -55,7 +57,7 @@ namespace Web.Controllers
         public async Task Delete(int id)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
-            await _userManager.Delete(id, userConnectedId);
+            await _userWriterService.Delete(id, userConnectedId);
         }
     }
 }

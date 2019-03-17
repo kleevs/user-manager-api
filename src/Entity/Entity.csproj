@@ -14,4 +14,8 @@
     <ProjectReference Include="..\UserManager\UserManager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UserManager\Tools\" />
+  </ItemGroup>
+
 </Project>

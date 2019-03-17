@@ -1,6 +1,6 @@
 ﻿namespace UserManager.Model
 {
-    public interface IUserData : IUser, IBirthData, INameable, IActivable, IHerarchy<IUser>, IEmailable
+    public interface IUserData : IUserEmailable, IBirthData, INameable, IActivable, IHerarchy<IUser>
     {
     }
 }

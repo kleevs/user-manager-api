@@ -10,7 +10,8 @@ namespace Entity
         IUser, 
         INewUser, 
         IUserData,
-        IUserEmailable
+        IUserEmailable,
+        IUserFilterable
     {
         [Key]
         public int? Id { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using UserManager.Implementation.Exception;
 using UserManager.Implementation.Model;
 using UserManager.Model;
@@ -9,22 +8,24 @@ namespace UserManager.Implementation
 {
     public class IdentityManager : IIdentityManager
     {
-        private readonly IGenericReaderRepository<IFilter, IUserEmailable> _userRepository;
-        private readonly IHasher _hasher;
+        private readonly IGenericReaderRepository<IUserLoginFilterable> _userRepository;
+        private readonly IFilterManager<ILoginFilter, IUserLoginFilterable> _userFilterManager;
 
-        public IdentityManager(IGenericReaderRepository<IFilter, IUserEmailable> userRepository, IHasher hasher)
+        public IdentityManager(
+            IGenericReaderRepository<IUserLoginFilterable> userRepository, 
+            IFilterManager<ILoginFilter, IUserLoginFilterable> userFilterManager
+        )
         {
             _userRepository = userRepository;
-            _hasher = hasher;
+            _userFilterManager = userFilterManager;
         }
 
-        public IUserEmailable Login(string email, string password) => 
-            _userRepository.List(new Filter
+        public IUserEmailable Login(string email, string password) =>
+            _userFilterManager.Apply(new LoginFilter
             {
-                IsActive = true,
                 Email = email,
-                Password = _hasher.Compute(password)
-            })
+                Password = password
+            }, _userRepository.List())
             .FirstOrDefault() ?? throw new LoginException();
     }
 }
