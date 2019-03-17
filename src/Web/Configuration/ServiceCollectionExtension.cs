@@ -13,19 +13,28 @@ namespace Web.Configuration
     {
         public static IServiceCollection Configure(this IServiceCollection services)
         {
+            // Service
             services.AddScoped<IUserReaderService, UserReaderService>();
             services.AddScoped<IUserWriterService, UserWriterService>();
-            services.AddScoped<IDbContext, DbContext>();
-            services.AddScoped<IHasher, Hasher>();
             services.AddScoped<IIdentityManager, IdentityManager>();
-            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
+            // Tools
+            services.AddScoped<IHasher, Hasher>();        
+
+            // Filter
+            services.AddScoped<IFilterManager<IFilter, IUserFilterable>, UserFilterManager>();
+            services.AddScoped<IFilterManager<ILoginFilter, IUserLoginFilterable>, LoginFilterManager>();
+
+            // Repository 
             services.AddScoped<IGenericReaderRepository<IUserFilterable>, UserRepository>();
             services.AddScoped<IGenericWriterRepository<INewUser>, UserRepository>();
             services.AddScoped<IGenericWriterRepository<IUpdateUser, int>, UserRepository>();
             services.AddScoped<IGenericReaderRepository<IUserEmailable>, UserRepository>();
+            services.AddScoped<IGenericReaderRepository<IUserLoginFilterable>, UserRepository>();
 
-            services.AddScoped<IFilterManager<IFilter, IUserFilterable>, UserFilterManager>();
+            // DB Context
+            services.AddScoped<IDbContext, DbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
             return services;
         }

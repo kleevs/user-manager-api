@@ -9,7 +9,8 @@ namespace Entity.Repository
         IGenericReaderRepository<IUserFilterable>,
         IGenericReaderRepository<IUserEmailable>,
         IGenericWriterRepository<INewUser>,
-        IGenericWriterRepository<IUpdateUser, int>
+        IGenericWriterRepository<IUpdateUser, int>,
+        IGenericReaderRepository<IUserLoginFilterable>
     {
         private readonly IDbContext _domainDbContext;
         private readonly IHasher _hasher;
@@ -31,11 +32,9 @@ namespace Entity.Repository
                 .Include(_ => _.ParentUser)
                 .AsNoTracking();
 
-        IQueryable<IUserFilterable> IGenericReaderRepository<IUserFilterable>.List() =>
-            List();
-
-        IQueryable<IUserEmailable> IGenericReaderRepository<IUserEmailable>.List() =>
-            List();
+        IQueryable<IUserFilterable> IGenericReaderRepository<IUserFilterable>.List() => List();
+        IQueryable<IUserEmailable> IGenericReaderRepository<IUserEmailable>.List() => List();
+        IQueryable<IUserLoginFilterable> IGenericReaderRepository<IUserLoginFilterable>.List() => List();
 
         public int Save(INewUser user)
         {

@@ -11,7 +11,8 @@ namespace Entity
         INewUser, 
         IUserData,
         IUserEmailable,
-        IUserFilterable
+        IUserFilterable,
+        IUserLoginFilterable
     {
         [Key]
         public int? Id { get; set; }
