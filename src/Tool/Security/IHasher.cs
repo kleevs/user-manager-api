@@ -1,4 +1,4 @@
-﻿namespace UserManager.Spi
+﻿namespace Tool
 {
     public interface IHasher
     {

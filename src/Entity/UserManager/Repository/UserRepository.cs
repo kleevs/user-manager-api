@@ -13,12 +13,10 @@ namespace Entity.Repository
         IGenericReaderRepository<IUserLoginFilterable>
     {
         private readonly IDbContext _domainDbContext;
-        private readonly IHasher _hasher;
 
-        public UserRepository(IDbContext domainDbContext, IHasher hasher)
+        public UserRepository(IDbContext domainDbContext)
         {
             _domainDbContext = domainDbContext;
-            _hasher = hasher;
         }
 
         public int Delete(int id)
@@ -43,7 +41,7 @@ namespace Entity.Repository
 
             _domainDbContext.User.Add(entity);
 
-            entity.Password = _hasher.Compute(user.Password);
+            entity.Password = user.Password;
             entity.Email = user.Email;
             entity.LastName = user.LastName;
             entity.FirstName = user.FirstName;

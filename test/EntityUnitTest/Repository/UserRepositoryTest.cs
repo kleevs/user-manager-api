@@ -15,15 +15,12 @@ namespace EntityUnitTest
             public TestContext()
             {
                 DbContext = new Mock<IDbContext>();
-                Hasher = new Mock<IHasher>();
                 Sut = new Entity.Repository.UserRepository(
-                    DbContext.Object,
-                    Hasher.Object
+                    DbContext.Object
                 );
             }
 
             public Mock<IDbContext> DbContext { get; set; }
-            public Mock<IHasher> Hasher { get; set; }
             public Entity.Repository.UserRepository Sut { get; set; }
         }
 
@@ -75,7 +72,6 @@ namespace EntityUnitTest
                     IsActive = isActive
                 };
                 userDbSet.Mock.Setup(_ => _.Add(It.IsAny<User>())).Callback<User>(u => u.Id = 1);
-                context.Hasher.Setup(_ => _.Compute(It.IsAny<string>())).Returns<string>(_ => _);
                 context.DbContext.Setup(_ => _.User).Returns(userDbSet);
 
                 // act

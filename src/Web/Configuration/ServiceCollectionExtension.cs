@@ -6,6 +6,7 @@ using UserManager.Implementation;
 using UserManager.Model;
 using UserManager.Spi;
 using Web.Tools;
+using Tool;
 
 namespace Web.Configuration
 {

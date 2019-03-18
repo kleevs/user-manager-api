@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Tool
 {
-    public class Hasher
+    public class Hasher : IHasher
     {
         private SHA256 _SHA256;
         public Hasher()

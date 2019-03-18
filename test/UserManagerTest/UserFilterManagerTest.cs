@@ -1,9 +1,7 @@
-﻿using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UserManager.Model;
-using UserManager.Spi;
 using Xunit;
 
 namespace UserManagerTest
@@ -14,11 +12,9 @@ namespace UserManagerTest
         {
             public TestContext()
             {
-                Hasher = new Mock<IHasher>();
-                Sut = new UserManager.Implementation.UserFilterManager(Hasher.Object);
+                Sut = new UserManager.Implementation.UserFilterManager();
             }
-
-            public Mock<IHasher> Hasher { get; set; }
+            
             public UserManager.Implementation.UserFilterManager Sut { get; set; }
         }
 
