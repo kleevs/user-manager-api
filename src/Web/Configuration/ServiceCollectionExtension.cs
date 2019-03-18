@@ -34,7 +34,7 @@ namespace Web.Configuration
 
             // DB Context
             services.AddScoped<IDbContext, DbContext>();
-            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

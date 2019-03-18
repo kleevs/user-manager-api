@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace UserManager.Spi
+namespace Entity
 {
     public interface IUnitOfWork
     {

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using UserManager;
@@ -13,11 +14,17 @@ namespace Web.Controllers
     {
         private readonly IUserReaderService _userReaderService;
         private readonly IUserWriterService _userWriterService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UsersController(IUserReaderService userReaderService, IUserWriterService userWriterService)
+        public UsersController(
+            IUserReaderService userReaderService, 
+            IUserWriterService userWriterService,
+            IUnitOfWork unitOfWork
+        )
         {
             _userReaderService = userReaderService;
             _userWriterService = userWriterService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -40,7 +47,7 @@ namespace Web.Controllers
         public async Task Update([FromBody]UpdateUserInputModel model, int id)
         {
             model.Id = id;
-            await _userWriterService.Save(model);
+            await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model));
         }
 
         [HttpPost]
@@ -49,7 +56,7 @@ namespace Web.Controllers
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
             model.ParentUser = userConnectedId;
-            await _userWriterService.Save(model);
+            await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model));
         }
 
         [HttpDelete]
@@ -57,7 +64,7 @@ namespace Web.Controllers
         public async Task Delete(int id)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
-            await _userWriterService.Delete(id, userConnectedId);
+            await _unitOfWork.SaveChangesAsync(_userWriterService.Delete(id, userConnectedId));
         }
     }
 }

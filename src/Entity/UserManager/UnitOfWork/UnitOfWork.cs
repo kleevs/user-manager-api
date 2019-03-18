@@ -1,9 +1,8 @@
-﻿using Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using UserManager.Spi;
 
-namespace UnitOfWork
+namespace Entity
 {
     public class UnitOfWork : IUnitOfWork
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UserManager.Implementation.Constant;
 using UserManager.Implementation.Exception;
 using UserManager.Model;
@@ -10,28 +9,25 @@ namespace UserManager.Implementation
 {
     public class UserWriterService : IUserWriterService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericWriterRepository<INewUser> _newUserRepository;
         private readonly IGenericWriterRepository<IUpdateUser, int> _updateUserRepository;
 
         public UserWriterService(
-            IUnitOfWork unitOfWork,
             IGenericWriterRepository<INewUser> newUserRepository,
             IGenericWriterRepository<IUpdateUser, int> updateUserRepository)
         {
-            _unitOfWork = unitOfWork;
             _newUserRepository = newUserRepository;
             _updateUserRepository = updateUserRepository;
         }
 
-        public async Task Delete(int id, int userConnectedId) => 
-            await _unitOfWork.SaveChangesAsync(_updateUserRepository.Delete(ControlDeleteUser(id, userConnectedId)));
+        public int Delete(int id, int userConnectedId) => 
+            _updateUserRepository.Delete(ControlDeleteUser(id, userConnectedId));
 
-        public async Task<int> Save(INewUser user) =>
-            await _unitOfWork.SaveChangesAsync(_newUserRepository.Save(ControlNewUser(user)));
+        public int Save(INewUser user) =>
+            _newUserRepository.Save(ControlNewUser(user));
 
-        public async Task<int> Save(IUpdateUser user) =>
-            await _unitOfWork.SaveChangesAsync(_updateUserRepository.Save(ControlUser(user)));
+        public int Save(IUpdateUser user) =>
+            _updateUserRepository.Save(ControlUser(user));
 
         private INewUser ControlNewUser(INewUser user)
         {

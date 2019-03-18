@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using UserManager.Model;
+﻿using UserManager.Model;
 
 namespace UserManager
 {
     public interface IUserWriterService
     {
-        Task<int> Save(INewUser user);
-        Task<int> Save(IUpdateUser user);
-        Task Delete(int user, int userConnectedId);
+        int Save(INewUser user);
+        int Save(IUpdateUser user);
+        int Delete(int user, int userConnectedId);
     }
 }
