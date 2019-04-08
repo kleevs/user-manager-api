@@ -7,7 +7,8 @@ namespace Entity
     public interface IDbContext
     {
         Task<int> SaveChangesAsync();
-        ChangeTracker ChangeTracker { get; }
+        void OnSaveChanges(System.Action callback);
+        //ChangeTracker ChangeTracker { get; }
 
         DbSet<User> User { get; }
     }

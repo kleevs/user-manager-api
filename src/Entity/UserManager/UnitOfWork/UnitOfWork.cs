@@ -16,17 +16,10 @@ namespace Entity
         public async Task<int> SaveChangesAsync() => 
             await _domainDbContext.SaveChangesAsync();
 
-        public async Task<int> SaveChangesAsync(int id)
+        public async Task<T> SaveChangesAsync<T>(T data)
         {
-            var property = _domainDbContext.ChangeTracker.Entries()
-                .SelectMany(_ =>_.Properties)
-                .Where(_ => _.CurrentValue is int)
-                .Where(_ => _.IsTemporary)
-                .Where(_ => (int)_.CurrentValue == id)
-                .FirstOrDefault();
-
             await SaveChangesAsync();
-            return property?.OriginalValue as int? ?? id;
+            return data;
         }
     }
 }

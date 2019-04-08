@@ -5,6 +5,6 @@ namespace Entity
     public interface IUnitOfWork
     {
         Task<int> SaveChangesAsync();
-        Task<int> SaveChangesAsync(int id);
+        Task<T> SaveChangesAsync<T>(T id);
     }
 }

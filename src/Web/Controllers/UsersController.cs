@@ -52,11 +52,11 @@ namespace Web.Controllers
 
         [HttpPost]
         [Route("users")]
-        public async Task Create([FromBody]NewUserInputModel model)
+        public async Task<int> Create([FromBody]NewUserInputModel model)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
             model.ParentUser = userConnectedId;
-            await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model));
+            return (await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model))).Id.Value;
         }
 
         [HttpDelete]

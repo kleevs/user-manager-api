@@ -2,7 +2,7 @@
 {
     public interface IGenericWriterRepository<TInput>
     {
-        int Save(TInput model);
+        TInput Save(TInput model);
     }
 
     public interface IGenericWriterRepository<TInput, TKey> : IGenericWriterRepository<TInput>

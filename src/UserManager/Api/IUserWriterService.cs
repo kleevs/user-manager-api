@@ -4,8 +4,8 @@ namespace UserManager
 {
     public interface IUserWriterService
     {
-        int Save(INewUser user);
-        int Save(IUpdateUser user);
+        INewUser Save(INewUser user);
+        IUpdateUser Save(IUpdateUser user);
         int Delete(int user, int userConnectedId);
     }
 }

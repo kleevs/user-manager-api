@@ -34,12 +34,13 @@ namespace Entity.Repository
         IQueryable<IUserEmailable> IGenericReaderRepository<IUserEmailable>.List() => List();
         IQueryable<IUserLoginFilterable> IGenericReaderRepository<IUserLoginFilterable>.List() => List();
 
-        public int Save(INewUser user)
+        public INewUser Save(INewUser user)
         {
             var entity = new User();
             var parent = user.ParentUser != null ? _domainDbContext.User.FirstOrDefault(_ => _.Id == user.ParentUser.Id) : null;
 
             _domainDbContext.User.Add(entity);
+            _domainDbContext.OnSaveChanges(() => user.Id = entity.Id);
 
             entity.Password = user.Password;
             entity.Email = user.Email;
@@ -49,10 +50,10 @@ namespace Entity.Repository
             entity.BirthDate = user.BirthDate;
             entity.ParentUser = parent;
 
-            return entity.Id.Value;
+            return user;
         }
 
-        public int Save(IUpdateUser user)
+        public IUpdateUser Save(IUpdateUser user)
         {
             var entity = _domainDbContext.User.FirstOrDefault(_ => _.Id == user.Id);
 
@@ -61,7 +62,7 @@ namespace Entity.Repository
             entity.IsActive = user.IsActive;
             entity.BirthDate = user.BirthDate;
 
-            return entity.Id.Value;
+            return user;
         }
     }
 }

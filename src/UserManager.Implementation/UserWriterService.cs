@@ -23,10 +23,10 @@ namespace UserManager.Implementation
         public int Delete(int id, int userConnectedId) => 
             _updateUserRepository.Delete(ControlDeleteUser(id, userConnectedId));
 
-        public int Save(INewUser user) =>
+        public INewUser Save(INewUser user) =>
             _newUserRepository.Save(ControlNewUser(user));
 
-        public int Save(IUpdateUser user) =>
+        public IUpdateUser Save(IUpdateUser user) =>
             _updateUserRepository.Save(ControlUser(user));
 
         private INewUser ControlNewUser(INewUser user)
