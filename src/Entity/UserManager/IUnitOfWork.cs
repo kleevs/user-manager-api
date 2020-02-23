@@ -4,12 +4,9 @@ using System.Threading.Tasks;
 
 namespace Entity
 {
-    public interface IDbContext
+    public interface IUnitOfWork
     {
         Task<int> SaveChangesAsync();
-        void OnSaveChanges(System.Action callback);
-        //ChangeTracker ChangeTracker { get; }
-
-        DbSet<User> User { get; }
+        Task<T> SaveChangesAsync<T>(T data);
     }
 }

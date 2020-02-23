@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UserManager.Model;
 using UserManager.Spi;
 
@@ -6,20 +7,39 @@ namespace UserManager.Implementation
 {
     public class UserReaderService : IUserReaderService
     {
-        private readonly IGenericReaderRepository<IUserFilterable> _userRepository;
-        private readonly IFilterManager<IFilter, IUserFilterable> _userFilterManager;
+        private readonly IUserReadOnlyRepository _userRepository;
 
         public UserReaderService(
-            IGenericReaderRepository<IUserFilterable> userRepository,
-            IFilterManager<IFilter, IUserFilterable> userFilterManager
+            IUserReadOnlyRepository userRepository
         )
         {
             _userRepository = userRepository;
-            _userFilterManager = userFilterManager;
         }
 
-        public IEnumerable<IUserData> List(IFilter filter) =>
-            _userFilterManager.Apply(filter, _userRepository.List());
+        public IEnumerable<IUserData> List(IFilter filter)
+        {
+            var query = _userRepository.Users;
+
+            if (filter != null) 
+            {
+                if (filter.IsActive.HasValue)
+                {
+                    query = query.Where(_ => _.IsActive == filter.IsActive);
+                }
+
+                if (filter.Id.HasValue)
+                {
+                    query = query.Where(_ => _.Id == filter.Id);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Email))
+                {
+                    query = query.Where(_ => _.Email.StartsWith(filter.Email));
+                }
+            }
+
+            return query.OrderBy(_ => _.Id);
+        }
 
         public IEnumerable<IUserData> List() => 
             List(null);

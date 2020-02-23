@@ -1,5 +1,7 @@
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UserManager.Implementation.Constant;
 using UserManager.Implementation.Exception;
@@ -15,16 +17,13 @@ namespace UserManagerTest
         {
             public TestContext()
             {
-                NewUserRepository = new Mock<IGenericWriterRepository<INewUser>>();
-                UpdateUserRepository = new Mock<IGenericWriterRepository< IUpdateUser, int>>();
+                UserRepository = new Mock<IUserRepository>();
                 Sut = new UserManager.Implementation.UserWriterService(
-                    NewUserRepository.Object,
-                    UpdateUserRepository.Object
+                    UserRepository.Object
                 );
             }
             
-            public Mock<IGenericWriterRepository<INewUser>> NewUserRepository { get; set; }
-            public Mock<IGenericWriterRepository<IUpdateUser, int>> UpdateUserRepository { get; set; }
+            public Mock<IUserRepository> UserRepository { get; set; }
             public UserManager.Implementation.UserWriterService Sut { get; set; } 
         }
 
@@ -42,7 +41,7 @@ namespace UserManagerTest
                 context.Sut.Delete(userId, userConnectedId);
 
                 // assert
-                context.UpdateUserRepository.Verify(_ => _.Delete(userId));
+                context.UserRepository.Verify(_ => _.RemoveUser(userId));
             }
 
             [Theory]
@@ -64,11 +63,12 @@ namespace UserManagerTest
         public class SaveNewUser
         {
             [Fact]
-            public void Should_Call_Repository_Save_Method()
+            public void Should_Change_Entity_From_Repository()
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestNewUser
+                var entity = new TestNewUser();
+                var request = new TestNewUser
                 {
                     LastName = "LastName",
                     FirstName = "FirstName",
@@ -76,12 +76,18 @@ namespace UserManagerTest
                     Email = "Email",
                     Password = "Password"
                 };
+                context.UserRepository.Setup(_ => _.NewUser()).Returns(entity);
 
                 // act
-                context.Sut.Save(user);
+                context.Sut.Save(request);
 
                 // assert
-                context.NewUserRepository.Verify(_ => _.Save(user));
+                context.UserRepository.Verify(_ => _.NewUser());
+                Assert.Equal(entity.FirstName, request.FirstName);
+                Assert.Equal(entity.LastName, request.LastName);
+                Assert.Equal(entity.BirthDate, request.BirthDate);
+                Assert.Equal(entity.Email, request.Email);
+                Assert.Equal(entity.Password, request.Password);
             }
 
             [Fact]
@@ -189,7 +195,7 @@ namespace UserManagerTest
                 Assert.Contains(exception.Errors, (error) => error.Code == CodeError.LoginRequired);
             }
 
-            class TestNewUser : INewUser
+            class TestNewUser : INewUserEntity
             {
                 public int? Id { get; set; }
                 public DateTime? BirthDate { get; set; }
@@ -205,22 +211,26 @@ namespace UserManagerTest
         public class SaveUpdateUser
         {
             [Fact]
-            public void Should_Call_Repository_Save_Method()
+            public void Should_Change_Entity_From_Repository()
             {
                 // arrange
                 var context = new TestContext();
-                var user = new TestUpdateUser
+                var entity = new TestUpdateUser();
+                var request = new TestUpdateUser
                 {
                     LastName = "LastName",
                     FirstName = "FirstName",
                     BirthDate = DateTime.UtcNow
                 };
+                context.UserRepository.Setup(_ => _.Users).Returns(new List<TestUpdateUser>() { entity }.AsQueryable());
 
                 // act
-                context.Sut.Save(user);
+                context.Sut.Save(request);
 
                 // assert
-                context.UpdateUserRepository.Verify(_ => _.Save(user));
+                Assert.Equal(entity.FirstName, request.FirstName);
+                Assert.Equal(entity.LastName, request.LastName);
+                Assert.Equal(entity.BirthDate, request.BirthDate);
             }
 
             [Fact]
@@ -265,7 +275,7 @@ namespace UserManagerTest
                 Assert.Contains(exception.Errors, (error) => error.Code == CodeError.BirthDateRequired);
             }
 
-            class TestUpdateUser : IUpdateUser
+            class TestUpdateUser : IUpdateUserEntity
             {
                 public int? Id { get; set; }
                 public DateTime? BirthDate { get; set; }

@@ -12,7 +12,10 @@ namespace Entity
         IUserData,
         IUserEmailable,
         IUserFilterable,
-        IUserLoginFilterable
+        IUserLoginFilterable,
+        IUpdateUserEntity,
+        INewUserEntity,
+        IUserFull
     {
         [Key]
         public int? Id { get; set; }
@@ -25,5 +28,7 @@ namespace Entity
         public User ParentUser { get; set; }
 
         IUser IHerarchy<IUser>.ParentUser => ParentUser;
+
+        IUser INewUserEntity.ParentUser { get => ParentUser; set => ParentUser = value as User; }
     }
 }

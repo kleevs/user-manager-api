@@ -1,11 +1,8 @@
 ﻿using Entity;
 using Microsoft.Extensions.DependencyInjection;
-using Entity.Repository;
 using UserManager;
 using UserManager.Implementation;
-using UserManager.Model;
 using UserManager.Spi;
-using Web.Tools;
 using Tool;
 
 namespace Web.Configuration
@@ -20,22 +17,14 @@ namespace Web.Configuration
             services.AddScoped<IIdentityManager, IdentityManager>();
 
             // Tools
-            services.AddScoped<IHasher, Hasher>();        
-
-            // Filter
-            services.AddScoped<IFilterManager<IFilter, IUserFilterable>, UserFilterManager>();
-            services.AddScoped<IFilterManager<ILoginFilter, IUserLoginFilterable>, LoginFilterManager>();
+            services.AddScoped<IHasher, Hasher>();
 
             // Repository 
-            services.AddScoped<IGenericReaderRepository<IUserFilterable>, UserRepository>();
-            services.AddScoped<IGenericWriterRepository<INewUser>, UserRepository>();
-            services.AddScoped<IGenericWriterRepository<IUpdateUser, int>, UserRepository>();
-            services.AddScoped<IGenericReaderRepository<IUserEmailable>, UserRepository>();
-            services.AddScoped<IGenericReaderRepository<IUserLoginFilterable>, UserRepository>();
+            services.AddScoped<IUnitOfWork, DbContext>();
+            services.AddScoped<IUserReadOnlyRepository, DbContext>();
+            services.AddScoped<IUserRepository, DbContext>();
+            services.AddScoped<IAccountRepository, DbContext>();
 
-            // DB Context
-            services.AddScoped<IDbContext, DbContext>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

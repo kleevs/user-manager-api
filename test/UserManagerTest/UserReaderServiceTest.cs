@@ -14,16 +14,13 @@ namespace UserManagerTest
         {
             public TestContext()
             {
-                UserRepository = new Mock<IGenericReaderRepository<IUserFilterable>>();
-                UserFilterManager = new Mock<IFilterManager<IFilter, IUserFilterable>>();
+                UserRepository = new Mock<IUserReadOnlyRepository>();
                 Sut = new UserManager.Implementation.UserReaderService(
-                    UserRepository.Object,
-                    UserFilterManager.Object
+                    UserRepository.Object
                 );
             }
             
-            public Mock<IGenericReaderRepository<IUserFilterable>> UserRepository { get; set; }
-            public Mock<IFilterManager<IFilter, IUserFilterable>> UserFilterManager { get; set; }
+            public Mock<IUserReadOnlyRepository> UserRepository { get; set; }
             public UserManager.Implementation.UserReaderService Sut { get; set; } 
         }
 
@@ -34,14 +31,14 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                var expected = new List<IUserFilterable>().AsQueryable();
-                context.UserRepository.Setup(_ => _.List()).Returns(expected);
+                var expected = new List<IUserFull>().AsQueryable();
+                context.UserRepository.Setup(_ => _.Users).Returns(expected);
 
                 // act
                 var result = context.Sut.List();
 
                 // assert
-                context.UserRepository.Verify(_ => _.List());
+                context.UserRepository.Verify(_ => _.Users);
                 Assert.Equal(expected, result);
             }
 

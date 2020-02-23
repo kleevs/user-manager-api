@@ -16,16 +16,13 @@ namespace UserManagerTest
         {
             public TestContext()
             {
-                UserRepository = new Mock<IGenericReaderRepository<IUserLoginFilterable>>();
-                UserFilterManager = new Mock<IFilterManager<ILoginFilter, IUserLoginFilterable>>();
+                UserRepository = new Mock<IAccountRepository>();
                 Sut = new UserManager.Implementation.IdentityManager(
-                    UserRepository.Object,
-                    UserFilterManager.Object
+                    UserRepository.Object
                 );
             }
             
-            public Mock<IGenericReaderRepository<IUserLoginFilterable>> UserRepository { get; set; }
-            public Mock<IFilterManager<ILoginFilter, IUserLoginFilterable>> UserFilterManager { get; set; }
+            public Mock<IAccountRepository> UserRepository { get; set; }
             public UserManager.Implementation.IdentityManager Sut { get; set; }
         }
 
@@ -36,7 +33,7 @@ namespace UserManagerTest
             {
                 // arrange
                 var context = new TestContext();
-                context.UserRepository.Setup(_ => _.List()).Returns(Enumerable.Empty<IUserLoginFilterable>().AsQueryable());
+                context.UserRepository.Setup(_ => _.Accounts).Returns(Enumerable.Empty<IUserFull>().AsQueryable());
 
                 // act
                 var exception = Assert.Throws<LoginException>(() => context.Sut.Login("login", "password"));
@@ -49,20 +46,23 @@ namespace UserManagerTest
             [InlineData("Email_1", "Password_1")]
             [InlineData("Email_1", "Password_2")]
             [InlineData("Email_3", "Password_2")]
-            public void Should_Return_LoginFilterManager_Value(string login, string password)
+            public void Should_Return_Value(string login, string password)
             {
                 // arrange
                 var context = new TestContext();
-                var query = new List<IUserLoginFilterable> { new TestUserEmailable() }.AsQueryable();
-                context.UserFilterManager.Setup(_ => _.Apply(It.IsAny<ILoginFilter>(), It.IsAny<IQueryable<IUserLoginFilterable>>()))
-                    .Returns(query);
-                context.UserRepository.Setup(_ => _.List()).Returns(query);
+                var query = new List<IUserLoginFilterable> 
+                { 
+                    new TestUserEmailable { Email = "Email_1", Password = "Password_1" },
+                    new TestUserEmailable { Email = "Email_1", Password = "Password_2" },
+                    new TestUserEmailable { Email = "Email_3", Password = "Password_2" }
+                }.AsQueryable();
+                context.UserRepository.Setup(_ => _.Accounts).Returns(query);
 
                 // act
                 var user = context.Sut.Login(login, password);
 
                 // assert
-                Assert.Equal(query.FirstOrDefault(), user);
+                Assert.Equal(query.FirstOrDefault(_ => _.Email == login && _.Password == password), user);
             }
 
             class TestUserEmailable : IUserLoginFilterable

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UserManager.Implementation.Constant;
 using UserManager.Implementation.Exception;
 using UserManager.Model;
@@ -9,25 +10,47 @@ namespace UserManager.Implementation
 {
     public class UserWriterService : IUserWriterService
     {
-        private readonly IGenericWriterRepository<INewUser> _newUserRepository;
-        private readonly IGenericWriterRepository<IUpdateUser, int> _updateUserRepository;
+        private readonly IUserRepository _userRepository;
 
         public UserWriterService(
-            IGenericWriterRepository<INewUser> newUserRepository,
-            IGenericWriterRepository<IUpdateUser, int> updateUserRepository)
+            IUserRepository userRepository)
         {
-            _newUserRepository = newUserRepository;
-            _updateUserRepository = updateUserRepository;
+            _userRepository = userRepository;
         }
 
         public int Delete(int id, int userConnectedId) => 
-            _updateUserRepository.Delete(ControlDeleteUser(id, userConnectedId));
+            _userRepository.RemoveUser(ControlDeleteUser(id, userConnectedId));
 
-        public INewUser Save(INewUser user) =>
-            _newUserRepository.Save(ControlNewUser(user));
+        public INewUser Save(INewUser request)
+        {
+            request = ControlNewUser(request);
+            var entity = _userRepository.NewUser();
+            var parent = request.ParentUser != null ? _userRepository.Users.FirstOrDefault(_ => _.Id == request.ParentUser.Id) : null;
 
-        public IUpdateUser Save(IUpdateUser user) =>
-            _updateUserRepository.Save(ControlUser(user));
+            entity.Password = request.Password;
+            entity.Email = request.Email;
+            entity.LastName = request.LastName;
+            entity.FirstName = request.FirstName;
+            entity.IsActive = request.IsActive;
+            entity.BirthDate = request.BirthDate;
+            entity.ParentUser = parent;
+
+            return entity;
+        }
+
+        public IUpdateUser Save(IUpdateUser request)
+        {
+            request = ControlUser(request);
+
+            var entity = _userRepository.Users.FirstOrDefault(_ => _.Id == request.Id);
+
+            entity.LastName = request.LastName;
+            entity.FirstName = request.FirstName;
+            entity.IsActive = request.IsActive;
+            entity.BirthDate = request.BirthDate;
+
+            return entity;
+        }
 
         private INewUser ControlNewUser(INewUser user)
         {
