@@ -96,8 +96,14 @@ namespace Web
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserManager v1");
+                c.InjectStylesheet("https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css");
+                c.InjectJavascript("https://code.jquery.com/jquery-3.3.1.min.js");
+                c.InjectJavascript("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js");
+                c.InjectJavascript("https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js");
+                c.InjectJavascript("/swagger-ui.js");
             });
 
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc(routes =>

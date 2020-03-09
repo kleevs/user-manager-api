@@ -42,7 +42,7 @@ namespace Web.Controllers
         /// </summary>
         /// <param name="form"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("login")]
         [AllowAnonymous]
         public async Task Login([FromBody]LoginInputModel form)
         {
