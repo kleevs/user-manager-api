@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Web.Configuration;
 using Web.Tools;
 
@@ -53,6 +57,18 @@ namespace Web
                 option.Filters.Add(new BusinessExceptionFilter());
                 option.Filters.Add(new DevExceptionFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserManager", Version = "v1" });
+                c.IncludeXmlComments(() =>
+                {
+                    var basePath = System.IO.Directory.GetCurrentDirectory();
+                    var fileName = $"Web.xml";
+                    return new XPathDocument(Path.Combine(basePath, fileName));
+                });
+            });
+
             services.AddCors();
             services.Configure<AppConfig>(Configuration);
             services.Configure();
@@ -74,6 +90,13 @@ namespace Web
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserManager v1");
+            });
 
             app.UseAuthentication();
             app.UseHttpsRedirection();

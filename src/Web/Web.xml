@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Web</name>
+    </assembly>
+    <members>
+        <member name="M:Web.Controllers.AccountsController.Index">
+            <summary>
+            Obtient les informations sur l'utilisateur connecté
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountsController.Login(Web.Models.LoginInputModel)">
+            <summary>
+            Connexion d'un utilisateur
+            </summary>
+            <param name="form"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.UsersController.Index">
+            <summary>
+            Obtient la liste des utilisateurs disponibles
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.UsersController.Index(System.Int32)">
+            <summary>
+            Obtient l'utilisateur ayant pour id {id}
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.UsersController.Update(Web.Models.UpdateUserInputModel,System.Int32)">
+            <summary>
+            Définit l'utilisateur ayant pour id {id}
+            </summary>
+            <param name="model">Données de l'utilisateur</param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.UsersController.Create(Web.Models.NewUserInputModel)">
+            <summary>
+            Définit un nouvel utilisateur
+            </summary>
+            <param name="model">Données de l'utilisateur</param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.UsersController.Delete(System.Int32)">
+            <summary>
+            Supprime l'utilisateur ayant pour id {id}
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

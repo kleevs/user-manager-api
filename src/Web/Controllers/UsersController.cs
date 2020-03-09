@@ -10,6 +10,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
+    [Route("users")]
     public class UsersController : ControllerBase
     {
         private readonly IUserReaderService _userReaderService;
@@ -27,6 +28,10 @@ namespace Web.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Obtient la liste des utilisateurs disponibles
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IEnumerable<UserOutputModel>> Index() =>
             await _userReaderService.List()
@@ -34,24 +39,37 @@ namespace Web.Controllers
             .ToAsyncEnumerable()
             .ToList();
 
-        [HttpGet]
-        [Route("users/{id}")]
+        /// <summary>
+        /// Obtient l'utilisateur ayant pour id {id}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
         public async Task<UserOutputModel> Index(int id) => 
             await _userReaderService.List(new FilterInputModel { Id = id })
             .Select(UserOutputModel.Map)
             .ToAsyncEnumerable()
             .First();
 
-        [HttpPut]
-        [Route("users/{id}")]
+        /// <summary>
+        /// Définit l'utilisateur ayant pour id {id}
+        /// </summary>
+        /// <param name="model">Données de l'utilisateur</param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
         public async Task Update([FromBody]UpdateUserInputModel model, int id)
         {
             model.Id = id;
             await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model));
         }
 
+        /// <summary>
+        /// Définit un nouvel utilisateur
+        /// </summary>
+        /// <param name="model">Données de l'utilisateur</param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("users")]
         public async Task<int> Create([FromBody]NewUserInputModel model)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
@@ -59,8 +77,12 @@ namespace Web.Controllers
             return (await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model))).Id.Value;
         }
 
-        [HttpDelete]
-        [Route("users/{id}")]
+        /// <summary>
+        /// Supprime l'utilisateur ayant pour id {id}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);

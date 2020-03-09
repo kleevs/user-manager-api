@@ -11,6 +11,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
+    [Route("accounts")]
     public class AccountsController : ControllerBase
     {
         private readonly IIdentityManager _identityManager;
@@ -20,6 +21,10 @@ namespace Web.Controllers
             _identityManager = identityManager;
         }
 
+        /// <summary>
+        /// Obtient les informations sur l'utilisateur connecté
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<object> Index()
         {
@@ -32,6 +37,11 @@ namespace Web.Controllers
             return new { id = userConnectedId };
         }
 
+        /// <summary>
+        /// Connexion d'un utilisateur
+        /// </summary>
+        /// <param name="form"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         public async Task Login([FromBody]LoginInputModel form)
