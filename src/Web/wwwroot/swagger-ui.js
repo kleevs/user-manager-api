@@ -25,10 +25,11 @@
                 $.ajax({
                     type: 'POST',
                     url: "/accounts/login",
-                    data: {
+                    contentType: 'application/json',
+                    data: JSON.stringify({
                         login: login,
                         password: password
-                    }
+                    })
                 }).done(function (response) {
                     resolve(response);
                 }).fail(function (error) {
