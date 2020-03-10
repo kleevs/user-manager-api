@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore;
+﻿using Entity;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Web
 {
@@ -7,7 +9,17 @@ namespace Web
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateWebHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<Entity.DbContext>();
+                context.User.Add(new User { Email = "test", Password = "test" });
+                context.SaveChanges();
+            }
+
+            host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
