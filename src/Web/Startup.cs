@@ -88,6 +88,7 @@ namespace Web
                 });
             });
             services.AddHealthChecks().AddDbContextCheck<Entity.DbContext>();
+            services.AddHealthChecksUI();
             services.AddCors();
             services.Configure<AppConfig>(Configuration);
             services.Configure();
@@ -136,6 +137,8 @@ namespace Web
                     ResponseWriter = WriteResponse
                 });
             });
+
+            app.UseHealthChecksUI(config => config.UIPath = "/hc-ui");
 
             app.UseStaticFiles();
             app.UseAuthentication();
