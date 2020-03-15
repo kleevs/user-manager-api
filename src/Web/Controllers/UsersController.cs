@@ -4,9 +4,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Model;
 using UserManager;
 using Web.Models;
+using Web.Tools;
 
 namespace Web.Controllers
 {
@@ -36,8 +38,7 @@ namespace Web.Controllers
         public async Task<IEnumerable<UserOutputModel>> Index() =>
             await _userReaderService.List()
             .Select(UserOutputModel.Map)
-            .ToAsyncEnumerable()
-            .ToList();
+            .ToListAsync();
 
         /// <summary>
         /// Obtient l'utilisateur ayant pour id {id}
@@ -48,8 +49,7 @@ namespace Web.Controllers
         public async Task<UserOutputModel> Index(int id) => 
             await _userReaderService.List(new FilterInputModel { Id = id })
             .Select(UserOutputModel.Map)
-            .ToAsyncEnumerable()
-            .First();
+            .FirstOrDefaultAsync();
 
         /// <summary>
         /// Définit l'utilisateur ayant pour id {id}

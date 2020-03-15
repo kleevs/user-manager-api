@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UserManager;
 using Web.Models;
+using Web.Tools;
 
 namespace Web.Controllers
 {
@@ -29,10 +30,9 @@ namespace Web.Controllers
         public async Task<object> Index()
         {
             var userConnectedId = await HttpContext.User.Claims
-                .ToAsyncEnumerable()
                 .Where(_ => _.Type == ClaimTypes.NameIdentifier)
                 .Select(_ => _.Value)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return new { id = userConnectedId };
         }
