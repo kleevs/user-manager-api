@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -88,7 +89,10 @@ namespace Web
                 });
             });
             services.AddHealthChecks().AddDbContextCheck<Entity.DbContext>();
-            services.AddHealthChecksUI();
+            services.AddHealthChecksUI("healthchecksdb", setup => 
+            {
+                setup.AddHealthCheckEndpoint("User microservice", "/health");
+            });
             services.AddCors();
             services.Configure<AppConfig>(Configuration);
             services.Configure();
@@ -134,7 +138,7 @@ namespace Web
             {
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions()
                 {
-                    ResponseWriter = WriteResponse
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
             });
 
@@ -147,23 +151,6 @@ namespace Web
             {
                 routes.MapRoute("default", "{controller=Users}/{action=Index}/{id?}");
             });
-        }
-
-        private static Task WriteResponse(HttpContext context, HealthReport result)
-        {
-            context.Response.ContentType = "application/json";
-
-            var json = new JObject(
-                new JProperty("status", result.Status.ToString()),
-                new JProperty("results", new JObject(result.Entries.Select(pair =>
-                    new JProperty(pair.Key, new JObject(
-                        new JProperty("status", pair.Value.Status.ToString()),
-                        new JProperty("description", pair.Value.Description),
-                        new JProperty("data", new JObject(pair.Value.Data.Select(
-                            p => new JProperty(p.Key, p.Value))))))))));
-
-            return context.Response.WriteAsync(
-                json.ToString(Formatting.Indented));
         }
     }
 }
