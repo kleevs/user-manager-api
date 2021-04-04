@@ -1,21 +1,16 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using UserManager.Model;
+using IReaderUser = UserManager.UserReaderServiceDeps.IUser;
+using IWriterUserEntity = UserManager.UserWriterServiceDeps.UserEntity;
 
 namespace Entity
 {
     [Table("User", Schema = "UserManager")]
-    public class User : 
-        IUser, 
-        INewUser, 
-        IUserData,
-        IUserEmailable,
-        IUserFilterable,
-        IUserLoginFilterable,
-        IUpdateUserEntity,
-        INewUserEntity,
-        IUserFull
+    public class User :
+        UserManager.IdentityManagerDeps.IUserEntity,
+        IWriterUserEntity,
+        IReaderUser
     {
         [Key]
         public int? Id { get; set; }
@@ -26,9 +21,15 @@ namespace Entity
         public bool IsActive { get; set; }
         public DateTime? BirthDate { get; set; }
         public User ParentUser { get; set; }
+        IWriterUserEntity IWriterUserEntity.ParentUser 
+        { 
+            get => ParentUser; 
+            set => ParentUser = value as User ?? (value != null ? new User { Id = value.Id } : null); 
+        }
 
-        IUser IHerarchy<IUser>.ParentUser => ParentUser;
-
-        IUser INewUserEntity.ParentUser { get => ParentUser; set => ParentUser = value as User; }
+        int IReaderUser.Id 
+        {
+            get => ParentUser.Id.Value;
+        }
     }
 }

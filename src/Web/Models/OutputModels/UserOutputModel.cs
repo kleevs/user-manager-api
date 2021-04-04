@@ -1,5 +1,5 @@
-﻿using System;
-using UserManager.Model;
+﻿using Entity;
+using System;
 
 namespace Web.Models
 {
@@ -13,7 +13,7 @@ namespace Web.Models
         public int? Id { get; set; }
         public int? ParentUser { get; set; }
 
-        public static UserOutputModel Map(IUserData user) => user == null ? null : new UserOutputModel
+        public static UserOutputModel Map(User user) => user == null ? null : new UserOutputModel
         {
             Id = user.Id,
             Email = user.Email,

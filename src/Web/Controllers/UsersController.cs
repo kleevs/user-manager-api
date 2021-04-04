@@ -15,18 +15,14 @@ namespace Web.Controllers
     [Route("users")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserReaderService _userReaderService;
-        private readonly IUserWriterService _userWriterService;
+        private readonly UserReaderService<User> _userReaderService;
+        private readonly UserWriterService<User> _userWriterService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UsersController(
-            IUserReaderService userReaderService, 
-            IUserWriterService userWriterService,
-            IUnitOfWork unitOfWork
-        )
+        public UsersController(Entity.DbContext dbContext, Entity.DbContext unitOfWork)
         {
-            _userReaderService = userReaderService;
-            _userWriterService = userWriterService;
+            _userReaderService = new UserReaderService<User>(dbContext);
+            _userWriterService = new UserWriterService<User>(dbContext);
             _unitOfWork = unitOfWork;
         }
 
@@ -73,7 +69,7 @@ namespace Web.Controllers
         public async Task<int> Create([FromBody]NewUserInputModel model)
         {
             var userConnectedId = int.Parse(HttpContext.User.Claims.First(_ => _.Type == ClaimTypes.NameIdentifier).Value);
-            model.ParentUser = userConnectedId;
+            model.ParentUserId = userConnectedId;
             return (await _unitOfWork.SaveChangesAsync(_userWriterService.Save(model))).Id.Value;
         }
 

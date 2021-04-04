@@ -1,5 +1,5 @@
 ﻿using System;
-using UserManager.Model;
+using UserManager.UserWriterServiceDeps;
 
 namespace Web.Models
 {
@@ -10,5 +10,7 @@ namespace Web.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public bool IsActive { get; set; }
+
+        int IUpdateUser.Id => Id.Value;
     }
 }

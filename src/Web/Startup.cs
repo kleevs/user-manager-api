@@ -60,7 +60,7 @@ namespace Web
                         {
                             await Task.Run(() => 
                             {
-                                context.Response.StatusCode = 301;
+                                context.Response.StatusCode = 401;
                             });
                         }
                     };

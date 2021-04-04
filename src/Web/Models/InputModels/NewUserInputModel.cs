@@ -1,5 +1,5 @@
 ﻿using System;
-using UserManager.Model;
+using UserManager.UserWriterServiceDeps;
 
 namespace Web.Models
 {
@@ -12,7 +12,6 @@ namespace Web.Models
         public bool IsActive { get; set; }
         public DateTime? BirthDate { get; set; }
         public int? Id { get; set; }
-        public int? ParentUser { get; set; }
-        IUser IHerarchy<IUser>.ParentUser => new NewUserInputModel { Id = ParentUser };
+        public int? ParentUserId { get; set; }
     }
 }

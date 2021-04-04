@@ -1,4 +1,4 @@
-﻿using UserManager.Model;
+﻿using UserManager.UserReaderServiceDeps;
 
 namespace Model
 {

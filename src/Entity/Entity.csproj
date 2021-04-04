@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tool\Tool.csproj" />
-    <ProjectReference Include="..\UserManager.Implementation\UserManager.Implementation.csproj" />
     <ProjectReference Include="..\UserManager\UserManager.csproj" />
   </ItemGroup>
 

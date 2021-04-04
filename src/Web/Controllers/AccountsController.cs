@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Entity;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,11 @@ namespace Web.Controllers
     [Route("accounts")]
     public class AccountsController : ControllerBase
     {
-        private readonly IIdentityManager _identityManager;
+        private readonly IdentityManager<User> _identityManager;
 
-        public AccountsController(IIdentityManager identityManager)
+        public AccountsController(DbContext dbContext)
         {
-            _identityManager = identityManager;
+            _identityManager = new IdentityManager<User>(dbContext);
         }
 
         /// <summary>

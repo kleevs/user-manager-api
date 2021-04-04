@@ -4,25 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Tool;
-using UserManager.Model;
-using UserManager.Spi;
+using UserManager.IdentityManagerDeps;
+using UserManager.UserReaderServiceDeps;
+using UserManager.UserWriterServiceDeps;
 
 namespace Entity
 {
     public partial class DbContext : Microsoft.EntityFrameworkCore.DbContext, 
         IUnitOfWork, 
-        IUserRepository,
-        IUserReadOnlyRepository,
-        IAccountRepository
+        IAccountRepository<User>,
+        IUserReadOnlyRepository<User>,
+        IUserWriterRepository<User>
     {
         private readonly IHasher _hasher;
         private readonly IList<Action> _callbacks;
 
         public virtual DbSet<User> User { get; set; }
 
-        IQueryable<IUpdateUserEntity> IUserRepository.Users => User.AsQueryable();
-        IQueryable<IUserFull> IUserReadOnlyRepository.Users => User.AsQueryable();
-        IQueryable<IUserLoginFilterable> IAccountRepository.Accounts => User.AsQueryable();
+        IQueryable<User> IUserWriterRepository<User>.Users => User.AsQueryable();
+        IQueryable<User> IUserReadOnlyRepository<User>.Users => User.AsQueryable();
+        IQueryable<User> IAccountRepository<User>.Accounts => User.AsQueryable();
 
         public DbContext(DbContextOptions<DbContext> options, IHasher hasher) : base(options)
         {
@@ -58,14 +59,14 @@ namespace Entity
             _callbacks.Add(callback);
         }
 
-        INewUserEntity IUserRepository.NewUser()
+        User IUserWriterRepository<User>.NewUser()
         {
             var entity = new User();
             User.Add(entity);
             return entity;
         }
 
-        int IUserRepository.RemoveUser(int id)
+        int IUserWriterRepository<User>.RemoveUser(int id)
         {
             User.Remove(User.Where(_ => _.Id == id).FirstOrDefault());
             return id;

@@ -15,7 +15,7 @@ namespace Web
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<Entity.DbContext>();
-                context.User.Add(new User { Email = "test", Password = "test" });
+                context.User.Add(new User { Email = "test@mail.com", Password = "test" });
                 context.SaveChanges();
             }
 
